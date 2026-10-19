@@ -1,0 +1,431 @@
+<title>John Leighow</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: sticky terminal-bar nav + alternating full-width bands, centered content column, inline SVG pipeline diagram as the hero's characteristic artifact */
+:root{
+  --bg:#f1ede4;
+  --surface:#fffdf8;
+  --surface-alt:#e6ddc9;
+  --fg:#1c1813;
+  --muted:#73695a;
+  --accent:#9c4f1e;
+  --accent2:#4a5530;
+  --border:rgba(28,24,19,0.14);
+  --font-display:'IBM Plex Mono', ui-monospace, Menlo, monospace;
+  --font-body:'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono:'IBM Plex Mono', ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0d0c0a;
+    --surface:#17140f;
+    --surface-alt:#211c14;
+    --fg:#ece6da;
+    --muted:#968c7b;
+    --accent:#d98a3d;
+    --accent2:#7c8f54;
+    --border:rgba(236,230,218,0.14);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0d0c0a;
+  --surface:#17140f;
+  --surface-alt:#211c14;
+  --fg:#ece6da;
+  --muted:#968c7b;
+  --accent:#d98a3d;
+  --accent2:#7c8f54;
+  --border:rgba(236,230,218,0.14);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);line-height:1.55}
+h1,h2,h3,.mono{font-family:var(--font-display)}
+.tabular{font-variant-numeric:tabular-nums}
+h2{text-wrap:balance;font-size:1.5rem;margin:0 0 .35em}
+h1{text-wrap:balance}
+p{max-width:65ch}
+a{color:var(--accent)}
+.gutter{padding-left:max(16px, env(safe-area-inset-left,0px));padding-right:max(16px, env(safe-area-inset-right,0px))}
+.wrap{max-width:960px;margin:0 auto}
+.band{padding-block:clamp(2.5rem,6vw,4.5rem)}
+.band-alt{background:var(--surface-alt)}
+.band-surface{background:var(--surface)}
+
+/* nav */
+nav.gutter{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:color-mix(in srgb, var(--surface) 88%, transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:11;background:var(--surface)}
+.navrow{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-block:.85rem;flex-wrap:wrap}
+.navlinks{display:flex;gap:1.25rem;flex-wrap:wrap;list-style:none;margin:0;padding:0;font-size:.85rem}
+.navlinks a{color:var(--fg);text-decoration:none;opacity:.75}
+.navlinks a:hover{opacity:1;color:var(--accent)}
+.brand{display:flex;align-items:center;gap:.6rem;text-decoration:none;color:var(--fg)}
+.brand-mark{width:30px;height:30px;border-radius:0;background:var(--accent);color:var(--bg);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:.8rem;flex:none}
+.brand-name{font-family:var(--font-display);font-weight:600;font-size:.95rem}
+
+/* hero */
+.hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(1.5rem,4vw,3rem);align-items:center}
+@media (max-width:760px){.hero-grid{grid-template-columns:1fr}}
+.eyebrow{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 .75rem}
+.hero h1{font-size:clamp(2rem,4.2vw,2.9rem);margin:0 0 .4rem;line-height:1.08}
+.hero .role{font-size:1.05rem;color:var(--muted);margin:0 0 1.1rem;max-width:40ch}
+.hero p.lede{color:var(--fg);font-size:1rem;margin:0 0 1.5rem}
+.cta-row{display:flex;gap:.75rem;flex-wrap:wrap}
+.btn{font-family:var(--font-mono);font-size:.82rem;text-decoration:none;padding:.6rem 1.05rem;border-radius:0;border:1px solid var(--border);color:var(--fg);display:inline-flex;align-items:center;gap:.4rem}
+.btn.primary{background:var(--accent);color:var(--bg);border-color:transparent;font-weight:600}
+.btn:hover{border-color:var(--accent)}
+
+/* diagram */
+.diagram{width:100%;height:auto;font-family:var(--font-mono)}
+.diagram text{fill:var(--fg)}
+.diagram .muted-text{fill:var(--muted)}
+.diagram rect.node{fill:var(--surface);stroke:var(--border)}
+.diagram rect.node.accent{stroke:var(--accent)}
+.diagram rect.node.accent2{stroke:var(--accent2)}
+.diagram path{stroke:var(--muted);fill:none;stroke-width:1.5}
+.diagram path.flow-accent{stroke:var(--accent)}
+
+/* section heading row */
+.section-head{display:flex;align-items:baseline;gap:.75rem;margin-bottom:1.75rem;flex-wrap:wrap}
+.section-head .tag{font-family:var(--font-mono);font-size:.72rem;color:var(--muted)}
+
+/* timeline */
+.role-entry{border:1px solid var(--border);border-radius:0;margin-bottom:1rem;background:var(--surface);overflow:hidden}
+.role-entry summary{list-style:none;cursor:pointer;padding:1.1rem 1.25rem;display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap}
+.role-entry summary::-webkit-details-marker{display:none}
+.role-main h3{margin:0 0 .25rem;font-size:1.05rem}
+.role-main .company{color:var(--muted);font-size:.9rem}
+.role-dates{font-family:var(--font-mono);font-size:.78rem;color:var(--muted);white-space:nowrap}
+.role-entry[open] summary{border-bottom:1px solid var(--border)}
+.role-body{padding:0 1.25rem 1.25rem}
+.role-body ul{margin:.75rem 0 0;padding-left:1.1rem}
+.role-body li{margin-bottom:.55rem;font-size:.92rem}
+.expand-hint{font-family:var(--font-mono);font-size:.72rem;color:var(--accent)}
+
+/* project cards */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.1rem}
+.card{border:1px solid var(--border);border-radius:0;padding:1.25rem;background:var(--surface);display:flex;flex-direction:column;gap:.6rem;min-width:0}
+.card .cat{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent2)}
+.card h3{margin:0;font-size:1.02rem}
+.card p{margin:0;font-size:.88rem;color:var(--muted)}
+.stack-row{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.25rem}
+.chip{font-family:var(--font-mono);font-size:.7rem;border:1px solid var(--border);border-radius:0;padding:.18rem .5rem;color:var(--muted)}
+
+/* skills */
+.skill-group{margin-bottom:1.4rem}
+.skill-group h3{font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 .6rem;font-family:var(--font-mono);font-weight:500}
+.skill-chips{display:flex;flex-wrap:wrap;gap:.5rem}
+.skill-chips .chip{color:var(--fg);padding:.3rem .65rem;font-size:.78rem}
+
+/* code snippets */
+.code-tabs{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem}
+@media (max-width:760px){.code-tabs{grid-template-columns:1fr}}
+.code-card{border:1px solid var(--border);border-radius:0;overflow:hidden;background:var(--surface);min-width:0}
+.code-card .code-title{font-family:var(--font-mono);font-size:.75rem;color:var(--muted);padding:.65rem 1rem;border-bottom:1px solid var(--border)}
+.code-card pre{margin:0;padding:1rem;overflow-x:auto;font-family:var(--font-mono);font-size:.78rem;line-height:1.6}
+.k{color:var(--accent)}
+.s{color:var(--accent2)}
+.c{color:var(--muted)}
+
+/* terminal archive */
+.terminal{border:1px solid var(--border);border-radius:0;overflow:hidden;background:var(--surface);max-width:620px}
+.term-bar{display:flex;gap:.4rem;padding:.6rem .8rem;border-bottom:1px solid var(--border);background:var(--surface-alt)}
+.term-bar span{width:10px;height:10px;border-radius:0;background:var(--border)}
+.term-body{padding:1rem 1.1rem;font-family:var(--font-mono);font-size:.78rem;overflow-x:auto}
+.term-body .prompt{color:var(--accent)}
+.term-body .path{color:var(--accent2)}
+.term-body div{white-space:pre;margin-bottom:.15rem;min-width:max-content}
+
+/* contact */
+.contact-grid{display:flex;flex-wrap:wrap;gap:1rem}
+.contact-item{border:1px solid var(--border);border-radius:0;padding:1rem 1.2rem;background:var(--surface);display:flex;align-items:center;gap:.8rem;flex:1 1 220px;min-width:0}
+.contact-item .label{font-family:var(--font-mono);font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.contact-item .value{font-size:.92rem;word-break:break-word}
+.copy-btn{margin-left:auto;font-family:var(--font-mono);font-size:.7rem;background:none;border:1px solid var(--border);color:var(--fg);border-radius:0;padding:.3rem .55rem;cursor:pointer;flex:none}
+.copy-btn:hover{border-color:var(--accent)}
+
+footer.gutter{padding-block:2rem;font-size:.8rem;color:var(--muted);font-family:var(--font-mono)}
+
+@media (prefers-reduced-motion:no-preference){
+  .card,.role-entry{transition:transform .15s ease, border-color .15s ease}
+  .card:hover{transform:translateY(-2px);border-color:var(--accent)}
+}
+</style>
+
+<nav class="gutter">
+  <div class="wrap navrow">
+    <a href="#top" class="brand"><span class="brand-mark">JL</span><span class="brand-name">John Leighow</span></a>
+    <ul class="navlinks">
+      <li><a href="#about">About</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#archive">Archive</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header id="top" class="band gutter">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="eyebrow">Data Engineering &amp; BI</p>
+      <h1>John Leighow</h1>
+      <p class="role">Senior Data Engineer &amp; Power BI Analyst — pipelines, dashboards, and the AI layer in between.</p>
+      <p class="lede">I build the infrastructure that turns messy operational data into reporting executives trust — Snowflake architectures, HIPAA-compliant AI workflows, and Power BI dashboards that explain themselves. Based in Shippensburg, PA.</p>
+      <div class="cta-row">
+        <a class="btn primary" href="#projects">View projects</a>
+        <a class="btn" href="#contact">Project inquiries</a>
+        <a class="btn" href="resume.pdf" download>Resume (PDF)</a>
+        <a class="btn" href="https://github.com/tagban">GitHub ↗</a>
+      </div>
+      <p class="mono" style="font-size:.72rem;color:var(--muted);margin-top:1rem">johnleighow.com</p>
+    </div>
+    <svg class="diagram" viewBox="0 0 360 250" role="img" aria-label="Data pipeline: GHL and Healthie feed Snowflake with clean materialized views, branching to de-identified AI analysis and into Power BI executive reporting, replacing a legacy GHL, Make, Airtable, Coupler.io pipeline">
+      <text x="10" y="16" class="muted-text" font-size="9">DATA PIPELINE — THE HEALTH INSTITUTE</text>
+      <rect class="node" x="10" y="28" width="100" height="32" rx="0"/>
+      <text x="60" y="48" font-size="10" text-anchor="middle">GHL</text>
+      <rect class="node" x="10" y="64" width="100" height="32" rx="0"/>
+      <text x="60" y="84" font-size="10" text-anchor="middle">Healthie</text>
+      <path d="M110 44 C130 44, 130 56, 150 56" marker-end="url(#arrow)"/>
+      <path d="M110 80 C130 80, 130 68, 150 68" marker-end="url(#arrow)"/>
+      <rect class="node accent" x="150" y="40" width="120" height="50" rx="0"/>
+      <text x="210" y="60" font-size="10" text-anchor="middle">Snowflake</text>
+      <text x="210" y="74" font-size="7" text-anchor="middle" class="muted-text">clean materialized views</text>
+      <path d="M210 90 V150" marker-end="url(#arrow)"/>
+      <path class="flow-accent" d="M170 90 C140 110, 100 130, 85 150" marker-end="url(#arrow-accent)"/>
+      <rect class="node" x="150" y="150" width="120" height="42" rx="0"/>
+      <text x="210" y="172" font-size="10" text-anchor="middle">Power BI</text>
+      <text x="210" y="184" font-size="9" text-anchor="middle" class="muted-text">executive reports</text>
+      <rect class="node accent2" x="10" y="150" width="120" height="58" rx="0"/>
+      <text x="70" y="170" font-size="10" text-anchor="middle">De-identify (Python)</text>
+      <text x="70" y="182" font-size="9" text-anchor="middle" class="muted-text">PHI stripped</text>
+      <text x="70" y="194" font-size="9" text-anchor="middle" class="muted-text">Claude · Gemini · Grok</text>
+      <text x="180" y="226" font-size="7.5" text-anchor="middle" class="muted-text">Replacing: GHL → Make → Airtable (clean views) → Coupler.io → Power BI</text>
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--muted)"/></marker>
+        <marker id="arrow-accent" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--accent)"/></marker>
+      </defs>
+    </svg>
+  </div>
+</header>
+
+<section id="about" class="band band-alt gutter">
+  <div class="wrap">
+    <div class="section-head"><h2>About</h2><span class="tag">01</span></div>
+    <p>I'm a data engineer and BI analyst who ended up specializing in the handoff points other people avoid: migrating a company off spreadsheets and onto a real warehouse, reconciling data streams that were never meant to line up, and building AI workflows that hold up under HIPAA scrutiny instead of just demoing well.</p>
+    <p>Most recently I helped lead the transition from Airtable and Google Sheets into a more robust Snowflake environment at The Health Institute, and before that spent five years at Ontrak Health owning ingestion automation, FHIR processing, and executive reporting for a healthcare operation with real compliance stakes. I'm equally comfortable in an executive review explaining why a number moved and in a terminal debugging why a pipeline didn't run.</p>
+  </div>
+</section>
+
+<section id="experience" class="band gutter">
+  <div class="wrap">
+    <div class="section-head"><h2>Experience</h2><span class="tag">02</span></div>
+
+    <details class="role-entry" open>
+      <summary>
+        <div class="role-main">
+          <h3>Data and Insights Analyst <span class="expand-hint">(acting Senior Data Analyst / Data Engineer)</span></h3>
+          <div class="company">The Health Institute</div>
+        </div>
+        <div class="role-dates tabular">Jan 2026 – Oct 2026</div>
+      </summary>
+      <div class="role-body">
+        <ul>
+          <li><strong>Architecture:</strong> helped lead the shift from a legacy GHL → Make → Airtable pipeline (cleaned via Airtable views, synced through Coupler.io) into Snowflake — consolidating GHL and Healthie as direct sources, governed by clean materialized views, with secure endpoints for long-term stability.</li>
+          <li><strong>Automation:</strong> built Coupler.io pipelines with Power Query M and DAX, plus Airtable automations that self-clean duplicates and cut downtime.</li>
+          <li><strong>Marketing analytics:</strong> modeled ad spend, ROAS, and click-to-impression ratios across Go High Level funnels; monitored call center dispositions.</li>
+          <li><strong>Executive BI:</strong> storytelling Power BI dashboards built from cleansed, standardized historical data, harmonizing EST/UTC streams into one source of truth. Also designed a row-level security model — frontline sales reps would see only their own data — with CRM-integrated clickable drill-through links; I owned the design and scoping, with build still underway when the engagement ended.</li>
+          <li><strong>Secure AI:</strong> HIPAA-compliant AI workflows (Python, Claude, Gemini, Grok) — identifiable data stripped before anything reaches a model, KPI columns scoped precisely so AI analysis stays accurate without overloading internal databases.</li>
+          <li><strong>Governance:</strong> multi-join data flows that let internal and de-identified external reporting run off the same source without duplicating logic.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="role-entry">
+      <summary>
+        <div class="role-main">
+          <h3>Data Engineer / Lead Data Analyst / Data Manager</h3>
+          <div class="company">Ontrak Health</div>
+        </div>
+        <div class="role-dates tabular">Jan 2020 – Jul 2025</div>
+      </summary>
+      <div class="role-body">
+        <ul>
+          <li>Owned end-to-end ingestion automation (Azure Data Factory, Microsoft Fabric), converting files to EDI format.</li>
+          <li>Built Power BI reporting and ran research queries across PostgreSQL, T-SQL, and BigQuery.</li>
+          <li>Wrote data quality checks for health-plan data using R, SQL views, and stored procedures.</li>
+          <li>Processed FHIR files into MongoDB, improving accessibility and Fabric integration.</li>
+          <li>Delivered executive outreach reporting for shareholder calls; applied ML to refine eligibility logic.</li>
+          <li>Engineered Gemini prompts to summarize health-coach calls; optimized databases across Azure, GCP, and AWS.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="role-entry">
+      <summary>
+        <div class="role-main">
+          <h3>Services Data Analyst / Remote Support / Technical Support Lead</h3>
+          <div class="company">Best Buy — Geek Squad</div>
+        </div>
+        <div class="role-dates tabular">Aug 2006 – Jan 2020</div>
+      </summary>
+      <div class="role-body">
+        <ul>
+          <li>Managed real-time staffing and operations for a distributed remote workforce, 24/7/365.</li>
+          <li>Built Power BI and Microsoft Dynamics reporting that directly changed operations; used statistical inference to test hypotheses against daily data.</li>
+          <li>Diagnosed Microsoft CRM issues and built alerting to cut downtime; documented troubleshooting and training materials.</li>
+          <li>Repaired hardware and resolved OS-level issues in-home and in-store across Windows, macOS, and Linux — spanning legacy releases through current, as a Geek Squad technical support lead.</li>
+          <li>Top customer satisfaction company-wide, 2010–2012.</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="projects" class="band band-alt gutter">
+  <div class="wrap">
+    <div class="section-head"><h2>Projects</h2><span class="tag">03</span></div>
+    <div class="card-grid">
+      <div class="card">
+        <span class="cat">Pipelines &amp; Architecture</span>
+        <h3>Legacy Pipeline → Snowflake Migration</h3>
+        <p>Helped lead the shift from a GHL → Make → Airtable pipeline — cleaned via Airtable views, synced through Coupler.io — to Snowflake fed directly by GHL and Healthie, governed by clean materialized views.</p>
+        <div class="stack-row"><span class="chip">Snowflake</span><span class="chip">GHL</span><span class="chip">Healthie</span><span class="chip">Materialized Views</span></div>
+      </div>
+      <div class="card">
+        <span class="cat">AI Integration</span>
+        <h3>HIPAA-Compliant AI Reporting</h3>
+        <p>Infrastructure that strips identifiable data before anything touches an LLM, with KPI columns scoped precisely so AI analysis stays accurate without ever seeing PHI.</p>
+        <div class="stack-row"><span class="chip">Python</span><span class="chip">Claude</span><span class="chip">Gemini</span></div>
+      </div>
+      <div class="card">
+        <span class="cat">Executive BI</span>
+        <h3>Multi-Timezone Reporting Suite</h3>
+        <p>Storytelling Power BI dashboards built on cleansed historical data, reconciling EST/UTC timestamp drift into a single executive-trusted dataset.</p>
+        <div class="stack-row"><span class="chip">Power BI</span><span class="chip">DAX</span></div>
+      </div>
+      <div class="card">
+        <span class="cat">Executive BI · Design</span>
+        <h3>Role-Level Security &amp; CRM Drill-Through</h3>
+        <p>Designed a Power BI row-level security model so frontline sales reps would see only their own accounts, with CRM-integrated clickable links for one-click drill-through to the source record. I scoped and architected this; build was still in progress when the engagement ended.</p>
+        <div class="stack-row"><span class="chip">Power BI</span><span class="chip">Row-Level Security</span><span class="chip">CRM Integration</span><span class="chip">Design Phase</span></div>
+      </div>
+      <div class="card">
+        <span class="cat">Pipelines &amp; Architecture</span>
+        <h3>EDI Ingestion Automation</h3>
+        <p>End-to-end file ingestion at Ontrak, converting raw health-plan exports to EDI format and processing FHIR records into MongoDB for downstream Fabric use.</p>
+        <div class="stack-row"><span class="chip">Azure Data Factory</span><span class="chip">Microsoft Fabric</span><span class="chip">MongoDB</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section id="skills" class="band gutter">
+  <div class="wrap">
+    <div class="section-head"><h2>Skills</h2><span class="tag">04</span></div>
+    <div class="skill-group">
+      <h3>Data &amp; Analytics</h3>
+      <div class="skill-chips">
+        <span class="chip">Power BI</span><span class="chip">Microsoft SQL</span><span class="chip">MySQL</span><span class="chip">MariaDB</span><span class="chip">Microsoft Fabric</span><span class="chip">Azure Data Factory</span><span class="chip">Informatica</span><span class="chip">Snowflake</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <h3>Software &amp; Systems</h3>
+      <div class="skill-chips">
+        <span class="chip">CCaaS</span><span class="chip">Salesforce CRM</span><span class="chip">Dynamics CRM</span><span class="chip">EHR / EMR</span><span class="chip">DevOps</span><span class="chip">Azure</span><span class="chip">Airtable</span><span class="chip">Blockchain</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <h3>IT &amp; Infrastructure</h3>
+      <div class="skill-chips">
+        <span class="chip">CCaaS Reporting</span><span class="chip">CCaaS Management</span><span class="chip">Windows (legacy–11)</span><span class="chip">macOS (Classic–Sequoia)</span><span class="chip">Linux</span><span class="chip">Hardware Diagnostics</span><span class="chip">Network Troubleshooting</span><span class="chip">Remote Support Tooling</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <h3>AI &amp; Programming</h3>
+      <div class="skill-chips">
+        <span class="chip">VB.NET</span><span class="chip">DAX</span><span class="chip">Power Query M</span><span class="chip">Python</span><span class="chip">R</span><span class="chip">PHP</span><span class="chip">HTML</span><span class="chip">ChatGPT</span><span class="chip">Claude</span><span class="chip">Gemini</span><span class="chip">Grok</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <h3>Practice</h3>
+      <div class="skill-chips">
+        <span class="chip">Agile</span><span class="chip">Real-Time Operations</span><span class="chip">HIPAA Compliance</span><span class="chip">Data Governance</span><span class="chip">Email Marketing</span><span class="chip">Business Analysis</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="archive" class="band band-alt gutter">
+  <div class="wrap">
+    <div class="section-head"><h2>Archive &amp; Side Projects</h2><span class="tag">05</span></div>
+    <p>Outside the day job, I preserve and rebuild old software — the same instincts that make me good at data architecture applied to things nobody's paying me to fix.</p>
+    <div class="terminal">
+      <div class="term-bar"><span></span><span></span><span></span></div>
+      <div class="term-body">
+<div><span class="prompt">guest@bigredh</span>:<span class="path">~</span>$ ls -la ./archive</div>
+<div>drwxr-xr-x  hlwiki/            Hotline software documentation</div>
+<div>drwxr-xr-x  macintosh-garden/  classic Mac OS game preservation</div>
+<div>drwxr-xr-x  battlenet-docs/    protocol documentation</div>
+<div>drwxr-xr-x  moghouse.cc/       FFXI recreated in C++</div>
+<div>-rw-r--r--  dyor-project.md    crypto fraud investigation, since 2021</div>
+<div><span class="prompt">guest@bigredh</span>:<span class="path">~</span>$ _</div>
+      </div>
+    </div>
+    <div class="card-grid" style="margin-top:1.4rem">
+      <div class="card">
+        <span class="cat">Fraud &amp; Research</span>
+        <h3>DYOR Project — Consultant &amp; Fraud Incident Manager</h3>
+        <p>Tracing scam tokens and bad actors in cryptocurrency since 2021; built the site's live Telegram, Discord, and market-data integrations and helped plan its growth into an educational platform.</p>
+      </div>
+      <div class="card">
+        <span class="cat">Preservation</span>
+        <h3>Web Archivist &amp; Server Developer</h3>
+        <p>Running BigRedH, HLWiki, Macintosh Garden, Battle.net Docs, and MogHouse.cc since 2004 — rebuilding historical archives with Python, PHP, and MySQL, hosting old Mac OS game servers, and recreating FFXI in C++.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="band gutter">
+  <div class="wrap">
+    <div class="section-head"><h2>Contact</h2><span class="tag">06</span></div>
+
+
+    <div class="contact-grid">
+      <div class="contact-item">
+        <div><div class="label">Email</div><div class="value" id="email-val">jleighow@gmail.com</div></div>
+        <button class="copy-btn" onclick="copyText('jleighow@gmail.com', this)">Copy</button>
+      </div>
+      <div class="contact-item">
+        <div><div class="label">LinkedIn</div><div class="value"><a href="https://linkedin.com/in/johnleighow">/in/johnleighow</a></div></div>
+      </div>
+      <div class="contact-item">
+        <div><div class="label">GitHub</div><div class="value"><a href="https://github.com/tagban">tagban</a></div></div>
+      </div>
+      <div class="contact-item">
+        <div><div class="label">Sites</div><div class="value"><a href="https://johnleighow.com">johnleighow.com</a> · <a href="https://bigredh.com">bigredh.com</a> · <a href="https://moghouse.cc">moghouse.cc</a> · <a href="https://bnet.cc">bnet.cc</a></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="gutter">
+  <div class="wrap">Shippensburg, PA — no phone number listed by design.</div>
+</footer>
+
+<script>
+function copyText(text, btn){
+  var original = btn.textContent;
+  function done(ok){ btn.textContent = ok ? 'Copied' : 'Select & copy'; setTimeout(function(){ btn.textContent = original; }, 1500); }
+  try{
+    navigator.clipboard.writeText(text).then(function(){done(true)}).catch(function(){done(false)});
+  }catch(e){ done(false); }
+}
+</script>
