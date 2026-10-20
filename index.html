@@ -202,6 +202,8 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .rm-callout{border:1px solid var(--border);background:var(--surface);min-width:0}
 .rm-callout .hd{background:var(--fg);color:var(--bg);font-family:var(--font-mono);font-size:.66rem;text-transform:uppercase;letter-spacing:.04em;padding:.4rem .7rem}
 .rm-callout .bd{padding:.6rem .7rem;font-size:.78rem;color:var(--fg)}
+.dist-pair{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.1rem}
+@media (max-width:760px){.dist-pair{grid-template-columns:1fr}}
 
 footer.gutter{padding-block:2rem;font-size:.8rem;color:var(--muted);font-family:var(--font-mono)}
 
@@ -564,6 +566,32 @@ footer.gutter{padding-block:2rem;font-size:.8rem;color:var(--muted);font-family:
           </div>
         </div>
       </div>
+
+      <div class="card" style="grid-column:1/-1" id="csat-nps-demo">
+        <span class="cat">Executive BI · Mockup</span>
+        <h3>CSAT / NPS Standardization</h3>
+        <p>When I joined, CSAT and NPS goals weren't clearly defined and didn't follow industry-standard scoring. I solidified the reporting and helped shift the culture so everyone understood what the numbers actually meant — not just that they existed. Built in Power BI. All values below are randomized placeholders.</p>
+        <div class="dash-mock">
+          <div class="dash-header">
+            <div style="display:flex;align-items:center;gap:.6rem">
+              <span class="brand-mark">JL</span>
+              <span class="dash-title">CSAT / NPS Standardization</span>
+            </div>
+            <span class="dash-badge">Illustrative data</span>
+          </div>
+          <div class="dash-body">
+            <div class="dash-grid" id="csat-gauges"></div>
+            <div class="dist-pair">
+              <div><div class="block-label">CSAT score distribution (1–5)</div><div id="csat-dist"></div></div>
+              <div><div class="block-label">NPS score distribution (0–10)</div><div id="nps-dist"></div></div>
+            </div>
+            <div class="rm-callout" style="margin-top:1rem">
+              <div class="hd">NPS definitions</div>
+              <div class="bd">Promoters (9–10) · Passives (7–8) · Detractors (0–6)<br>NPS = (Promoters − Detractors) ÷ Total Responses</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -878,5 +906,43 @@ function copyText(text, btn){
     m.appendChild(svg);
   }
   renderRevenueChart('rm-chart', {max:400, revenue:[310,345,290,360,330,300], target:[320,320,325,330,325,320]});
+})();
+
+(function(){
+  var CSAT_NPS_GAUGES = [
+    {label:'CSAT Score', min:0, max:5, value:3.9, fmt:function(v){return v.toFixed(2);}, zones:[[0,.6,'bad'],[.6,.8,'mid'],[.8,1,'good']]},
+    {label:'NPS Score', min:0, max:20, value:9.4, fmt:function(v){return v.toFixed(2);}, zones:[[0,.4,'bad'],[.4,.7,'mid'],[.7,1,'good']]}
+  ];
+  if(typeof renderGauges==='function'){ renderGauges('csat-gauges', CSAT_NPS_GAUGES); }
+  function renderDistBars(mountId, opts){
+    var m=document.getElementById(mountId);
+    if(!m) return;
+    var ns='http://www.w3.org/2000/svg';
+    var labels=opts.labels, values=opts.values, colors=opts.colors, max=opts.max, viewW=opts.viewW, gap=opts.gap;
+    var n=values.length, left=22, rightMargin=10, bottom=120, top=20;
+    var barW=(viewW-left-rightMargin-gap*(n-1))/n;
+    var svg=document.createElementNS(ns,'svg'); svg.setAttribute('viewBox','0 0 '+viewW+' 150'); svg.setAttribute('class','diagram');
+    var colorMap={bad:'var(--gauge-bad)', mid:'var(--gauge-mid)', good:'var(--accent)'};
+    values.forEach(function(v,i){
+      var x=left+i*(barW+gap);
+      var h=(v/max)*(bottom-top);
+      var y=bottom-h;
+      var r=document.createElementNS(ns,'rect');
+      r.setAttribute('x',x); r.setAttribute('y',y); r.setAttribute('width',barW); r.setAttribute('height',h);
+      r.setAttribute('fill',colorMap[colors[i]]);
+      svg.appendChild(r);
+      var vt=document.createElementNS(ns,'text');
+      vt.setAttribute('x',x+barW/2); vt.setAttribute('y',y-4); vt.setAttribute('text-anchor','middle'); vt.setAttribute('font-size','7.5'); vt.setAttribute('fill','var(--muted)'); vt.setAttribute('font-family','var(--font-mono)');
+      vt.textContent=v;
+      svg.appendChild(vt);
+      var lt=document.createElementNS(ns,'text');
+      lt.setAttribute('x',x+barW/2); lt.setAttribute('y',bottom+14); lt.setAttribute('text-anchor','middle'); lt.setAttribute('font-size','8'); lt.setAttribute('fill','var(--muted)'); lt.setAttribute('font-family','var(--font-mono)');
+      lt.textContent=labels[i];
+      svg.appendChild(lt);
+    });
+    m.appendChild(svg);
+  }
+  renderDistBars('csat-dist', {labels:[1,2,3,4,5], values:[45,58,95,175,220], colors:['bad','bad','mid','good','good'], max:220*1.15, viewW:320, gap:8});
+  renderDistBars('nps-dist', {labels:[0,1,2,3,4,5,6,7,8,9,10], values:[5,12,8,15,20,28,35,55,80,110,165], colors:['bad','bad','bad','bad','bad','bad','bad','mid','mid','good','good'], max:165*1.15, viewW:480, gap:6});
 })();
 </script>
