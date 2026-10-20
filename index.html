@@ -169,6 +169,20 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .team-stat{text-align:center}
 .team-stat .num{font-family:var(--font-display);font-size:1.4rem;font-weight:700}
 .team-stat .lbl{font-family:var(--font-mono);font-size:.68rem;color:var(--muted);text-transform:uppercase}
+.rls-compare{display:grid;grid-template-columns:1fr 1fr;gap:1rem;padding:1.2rem}
+@media (max-width:760px){.rls-compare{grid-template-columns:1fr}}
+.rls-panel{background:var(--surface);border:1px solid var(--border);min-width:0}
+.rls-panel-head{padding:.6rem 1rem;border-bottom:1px solid var(--border);font-family:var(--font-mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);display:flex;justify-content:space-between;gap:.5rem}
+.kpi-strip{display:flex;flex-wrap:wrap;gap:.5rem;padding:.9rem}
+.kpi-tile{flex:1 1 85px;background:var(--surface-alt);padding:.55rem .4rem;text-align:center;min-width:0}
+.kpi-tile .v{font-family:var(--font-display);font-weight:700;font-size:1rem}
+.kpi-tile .l{font-family:var(--font-mono);font-size:.6rem;color:var(--muted);text-transform:uppercase;margin-top:.1rem}
+.rls-table-title{font-family:var(--font-mono);font-size:.68rem;text-transform:uppercase;color:var(--muted);padding:0 .9rem .4rem;letter-spacing:.04em}
+.rls-table-wrap{padding:0 .9rem .9rem;overflow-x:auto}
+.rls-table{width:100%;border-collapse:collapse;font-size:.72rem;font-family:var(--font-mono)}
+.rls-table th{text-align:left;padding:.3rem .45rem;border-bottom:1px solid var(--border);color:var(--muted);font-weight:500;white-space:nowrap}
+.rls-table td{padding:.3rem .45rem;border-bottom:1px solid var(--border);white-space:nowrap}
+.rls-table .idlink{color:var(--accent);text-decoration:underline}
 
 footer.gutter{padding-block:2rem;font-size:.8rem;color:var(--muted);font-family:var(--font-mono)}
 
@@ -384,6 +398,69 @@ footer.gutter{padding-block:2rem;font-size:.8rem;color:var(--muted);font-family:
             <div class="team-tile">
               <div class="team-stat"><div class="num tabular">24</div><div class="lbl">Headcount</div></div>
               <div class="team-stat"><div class="num tabular">3</div><div class="lbl">Open Roles</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="grid-column:1/-1" id="rls-demo">
+        <span class="cat">Executive BI · Mockup</span>
+        <h3>Row-Level Security Demo</h3>
+        <p>The same Power BI report, filtered by who's viewing it — a manager sees every rep's numbers, a rep sees only their own, down to the row level, with each record a clickable link back into the CRM. Names, IDs, and values below are fabricated.</p>
+        <div class="dash-mock">
+          <div class="dash-header">
+            <div style="display:flex;align-items:center;gap:.6rem">
+              <span class="brand-mark">JL</span>
+              <span class="dash-title">Row-Level Security Demo</span>
+            </div>
+            <span class="dash-badge">Illustrative data</span>
+          </div>
+          <div class="rls-compare">
+            <div class="rls-panel">
+              <div class="rls-panel-head"><span>Manager view</span><span>sees all reps</span></div>
+              <div class="kpi-strip">
+                <div class="kpi-tile"><div class="v tabular">1,840</div><div class="l">Total Booked</div></div>
+                <div class="kpi-tile"><div class="v tabular">1,690</div><div class="l">Total Attended</div></div>
+                <div class="kpi-tile"><div class="v tabular">91.8%</div><div class="l">Show Rate</div></div>
+                <div class="kpi-tile"><div class="v tabular">205</div><div class="l">Program A Sales</div></div>
+                <div class="kpi-tile"><div class="v tabular">78</div><div class="l">Program B Sales</div></div>
+                <div class="kpi-tile"><div class="v tabular">19.6%</div><div class="l">Total Close</div></div>
+              </div>
+            </div>
+            <div class="rls-panel">
+              <div class="rls-panel-head"><span>Rep view</span><span>sees only their own</span></div>
+              <div class="kpi-strip">
+                <div class="kpi-tile"><div class="v tabular">118</div><div class="l">Total Booked</div></div>
+                <div class="kpi-tile"><div class="v tabular">97</div><div class="l">Total Attended</div></div>
+                <div class="kpi-tile"><div class="v tabular">82.2%</div><div class="l">Show Rate</div></div>
+                <div class="kpi-tile"><div class="v tabular">6</div><div class="l">Program A Sales</div></div>
+                <div class="kpi-tile"><div class="v tabular">2</div><div class="l">Program B Sales</div></div>
+                <div class="kpi-tile"><div class="v tabular">16.9%</div><div class="l">Total Close</div></div>
+              </div>
+              <div class="rls-table-title">Bookings</div>
+              <div class="rls-table-wrap">
+                <table class="rls-table">
+                  <thead><tr><th>Record ID</th><th>Date</th><th>Time</th><th>Status</th></tr></thead>
+                  <tbody>
+                    <tr><td class="idlink">a7Qk2MrPz9XsLwVt4</td><td>10/02</td><td>9:30 AM</td><td>Attended</td></tr>
+                    <tr><td class="idlink">hT3fNc8DyRm1Bq6Ue</td><td>10/02</td><td>11:00 AM</td><td>Attended</td></tr>
+                    <tr><td class="idlink">j9WpLx4VbKs2Zc7Tn</td><td>10/03</td><td>1:30 PM</td><td>No-Show</td></tr>
+                    <tr><td class="idlink">q2RkMb7FgNw5Hs1Yd</td><td>10/03</td><td>3:00 PM</td><td>Canceled</td></tr>
+                    <tr><td class="idlink">v6TcXz3PqLf8Jm4Rb</td><td>10/04</td><td>10:00 AM</td><td>Rescheduled</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="rls-table-title">Program Sales</div>
+              <div class="rls-table-wrap">
+                <table class="rls-table">
+                  <thead><tr><th>Record ID</th><th>Program</th><th>Purchase Date</th><th>Payment</th></tr></thead>
+                  <tbody>
+                    <tr><td class="idlink">m4BnQw9ScVd2Kt5Lp</td><td>Program A</td><td>10/02</td><td>Paid in Full</td></tr>
+                    <tr><td class="idlink">x8FjRk1TyUe6Nq3Zw</td><td>Program A</td><td>10/03</td><td>Recurring</td></tr>
+                    <tr><td class="idlink">c5HdPm7VbXr2Ls9Qt</td><td>Program B</td><td>10/04</td><td>Financed</td></tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
