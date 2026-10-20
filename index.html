@@ -188,6 +188,20 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .trend-legend .sw-line{display:inline-block;width:14px;height:2px;background:var(--accent);margin-right:.3rem;vertical-align:middle}
 .trend-legend .sw-band{display:inline-block;width:14px;height:8px;background:var(--accent);opacity:.3;margin-right:.3rem;vertical-align:middle}
 .trend-legend .sw-forecast{display:inline-block;width:14px;height:0;border-top:2px dashed var(--muted);margin-right:.3rem;vertical-align:middle}
+.rm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:.7rem}
+.rm-tile{background:var(--surface);border:1px solid var(--border);padding:.65rem .6rem;min-width:0}
+.rm-tile .lbl{font-family:var(--font-mono);font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.rm-tile .val{font-family:var(--font-display);font-weight:700;font-size:1.1rem;margin:.15rem 0}
+.rm-tile .tgt{font-family:var(--font-mono);font-size:.62rem;color:var(--muted)}
+.rm-tile .delta{font-family:var(--font-mono);font-size:.68rem;font-weight:600;margin-top:.2rem}
+.rm-tile .delta.good{color:var(--accent)}
+.rm-tile .delta.bad{color:var(--gauge-bad)}
+.rm-layout{display:grid;grid-template-columns:2fr 1fr;gap:1rem;margin-top:1.1rem}
+@media (max-width:760px){.rm-layout{grid-template-columns:1fr}}
+.rm-callouts{display:flex;flex-direction:column;gap:.6rem}
+.rm-callout{border:1px solid var(--border);background:var(--surface);min-width:0}
+.rm-callout .hd{background:var(--fg);color:var(--bg);font-family:var(--font-mono);font-size:.66rem;text-transform:uppercase;letter-spacing:.04em;padding:.4rem .7rem}
+.rm-callout .bd{padding:.6rem .7rem;font-size:.78rem;color:var(--fg)}
 
 footer.gutter{padding-block:2rem;font-size:.8rem;color:var(--muted);font-family:var(--font-mono)}
 
@@ -373,6 +387,33 @@ footer.gutter{padding-block:2rem;font-size:.8rem;color:var(--muted);font-family:
         <h3>Multi-Timezone Reporting Suite</h3>
         <p>Storytelling Power BI dashboards built on cleansed historical data, reconciling EST/UTC timestamp drift into a single executive-trusted dataset.</p>
         <div class="stack-row"><span class="chip">Power BI</span><span class="chip">DAX</span></div>
+      </div>
+      <div class="card" style="grid-column:1/-1" id="revenue-marketing-demo">
+        <span class="cat">Executive BI · Mockup</span>
+        <h3>Revenue &amp; Marketing Performance</h3>
+        <p>A monthly revenue and ad-spend report with target tracking, a weekly trend, and auto-generated best/worst week callouts — built in Power BI from the cleaned ad-spend models described above. All values below are randomized placeholders.</p>
+        <div class="dash-mock">
+          <div class="dash-header">
+            <div style="display:flex;align-items:center;gap:.6rem">
+              <span class="brand-mark">JL</span>
+              <span class="dash-title">Revenue &amp; Marketing Performance</span>
+            </div>
+            <span class="dash-badge">Illustrative data</span>
+          </div>
+          <div class="dash-body">
+            <div class="rm-grid" id="rm-kpis"></div>
+            <div class="rm-layout">
+              <div>
+                <div class="block-label">Revenue vs. target by week</div>
+                <div id="rm-chart"></div>
+              </div>
+              <div class="rm-callouts">
+                <div class="rm-callout"><div class="hd">Best week</div><div class="bd">Revenue beat target by 24% in week 6 — the strongest week of the period.</div></div>
+                <div class="rm-callout"><div class="hd">Worst week</div><div class="bd">Revenue missed target by 18% in week 3, driven by a mid-month ad-spend pullback.</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="card">
         <span class="cat">Executive BI</span>
@@ -780,5 +821,62 @@ function copyText(text, btn){
     fStd:[3,5,7],
     labels:{0:'Jan 2026',3:'Apr 2026',6:'Jul 2026',9:'Oct 2026',12:'Jan 2027'}
   });
+})();
+
+(function(){
+  var RM_KPIS = [
+    {label:'Revenue', value:'$1.86M', target:'Target: $2.10M', delta:'▼ −$240K', cls:'bad'},
+    {label:'Ad Spend', value:'$312K', target:'Target: $340K', delta:'▼ −$28K', cls:'good'},
+    {label:'ROAS', value:'4.2', target:'Target: 5.0', delta:'▼ −0.8', cls:'bad'},
+    {label:'ASR %', value:'18.3%', target:'Target: 15.0%', delta:'▲ +3.3pts', cls:'good'},
+    {label:'CPA', value:'$42', target:'Target: $38', delta:'▲ +$4', cls:'bad'}
+  ];
+  var mount=document.getElementById('rm-kpis');
+  if(mount){
+    RM_KPIS.forEach(function(k){
+      var t=document.createElement('div'); t.className='rm-tile';
+      t.innerHTML='<div class="lbl">'+k.label+'</div><div class="val">'+k.value+'</div><div class="tgt">'+k.target+'</div><div class="delta '+k.cls+'">'+k.delta+'</div>';
+      mount.appendChild(t);
+    });
+  }
+  function renderRevenueChart(mountId, opts){
+    var m=document.getElementById(mountId);
+    if(!m) return;
+    var ns='http://www.w3.org/2000/svg';
+    var left=50, right=610, top=15, bottom=140, max=opts.max;
+    var revenue=opts.revenue, target=opts.target;
+    var n=revenue.length, slot=(right-left)/n, barW=slot*0.55;
+    function xc(i){ return left+i*slot+slot/2; }
+    function Y(v){ return bottom-(v/max)*(bottom-top); }
+    var svg=document.createElementNS(ns,'svg'); svg.setAttribute('viewBox','0 0 640 170'); svg.setAttribute('class','diagram');
+    revenue.forEach(function(v,i){
+      var h=bottom-Y(v);
+      var r=document.createElementNS(ns,'rect');
+      r.setAttribute('x',xc(i)-barW/2); r.setAttribute('y',Y(v)); r.setAttribute('width',barW); r.setAttribute('height',h);
+      r.setAttribute('fill','var(--accent)'); r.setAttribute('fill-opacity','0.75');
+      svg.appendChild(r);
+      var lt=document.createElementNS(ns,'text');
+      lt.setAttribute('x',xc(i)); lt.setAttribute('y',bottom+14); lt.setAttribute('text-anchor','middle'); lt.setAttribute('font-size','8'); lt.setAttribute('fill','var(--muted)'); lt.setAttribute('font-family','var(--font-mono)');
+      lt.textContent='Wk '+(i+1);
+      svg.appendChild(lt);
+    });
+    var linePts=target.map(function(v,i){ return xc(i)+','+Y(v); });
+    var line=document.createElementNS(ns,'polyline');
+    line.setAttribute('points',linePts.join(' '));
+    line.setAttribute('fill','none'); line.setAttribute('stroke','var(--fg)'); line.setAttribute('stroke-width','2'); line.setAttribute('stroke-dasharray','5 3');
+    svg.appendChild(line);
+    target.forEach(function(v,i){
+      var c=document.createElementNS(ns,'circle');
+      c.setAttribute('cx',xc(i)); c.setAttribute('cy',Y(v)); c.setAttribute('r','2.5');
+      c.setAttribute('fill','var(--fg)');
+      svg.appendChild(c);
+    });
+    var leg=document.createElementNS(ns,'text');
+    leg.setAttribute('x',left); leg.setAttribute('y',10); leg.setAttribute('font-size','8'); leg.setAttribute('fill','var(--muted)'); leg.setAttribute('font-family','var(--font-mono)');
+    leg.textContent='■ Revenue    –– Target';
+    svg.appendChild(leg);
+    m.appendChild(svg);
+  }
+  renderRevenueChart('rm-chart', {max:400, revenue:[310,345,290,360,330,300], target:[320,320,325,330,325,320]});
 })();
 </script>
