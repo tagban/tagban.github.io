@@ -260,11 +260,11 @@ footer.gutter{padding-block:2rem;font-size:.8rem;color:var(--muted);font-family:
       </summary>
       <div class="role-body">
         <ul>
-          <li><strong>Architecture:</strong> part of the team planning The Health Institute's shift from a CRM (GHL) to an EHR (Healthie) — my piece was the data engineering and architecture planning: moving off a legacy GHL → Make → Airtable pipeline (cleaned via Airtable views, synced through Coupler.io) toward Snowflake, consolidating GHL and Healthie as governed, direct sources with clean materialized views and secure endpoints. I owned the architecture and migration plan; cutover was still in progress when the engagement ended.</li>
-          <li><strong>Automation:</strong> built Coupler.io pipelines with Power Query M and DAX, plus Airtable automations that self-clean duplicates and cut downtime.</li>
-          <li><strong>Marketing analytics:</strong> modeled ad spend, ROAS, and click-to-impression ratios across Go High Level funnels; monitored call center dispositions.</li>
-          <li><strong>Executive BI:</strong> storytelling Power BI dashboards built from cleansed, standardized historical data, harmonizing EST/UTC streams into one source of truth. Built Power BI row-level security so frontline sales reps only ever saw their own data, with CRM-integrated clickable links for one-click drill-through to the underlying record.</li>
-          <li><strong>Secure AI:</strong> HIPAA-compliant AI workflows (Python, Claude, Gemini, Grok) — identifiable data stripped before anything reaches a model, KPI columns scoped precisely so AI analysis stays accurate without overloading internal databases.</li>
+          <li><strong>Architecture:</strong> part of the team planning The Health Institute's shift from a CRM (GHL) to an EHR (Healthie) — my piece was the data engineering and architecture planning: moving off a legacy GHL → Make → Airtable pipeline (cleaned via Airtable views, synced through Coupler.io) toward Snowflake, consolidating GHL and Healthie as governed, direct sources with clean materialized views and secure endpoints. I owned the architecture and migration plan. The EHR itself launched successfully before I left; the Snowflake cutover on the data side was still in progress when the engagement ended. This set up a smoother, faster data flow and opened the door for AI to automate reporting work that used to require a person.</li>
+          <li><strong>Automation:</strong> built Coupler.io pipelines with Power Query M and DAX, plus Airtable automations that self-clean duplicates and cut downtime. That finally let several team members stop manually pulling data every day — including on vacation — giving them back real time, not just a better workflow.</li>
+          <li><strong>Marketing analytics:</strong> modeled ad spend, ROAS, and click-to-impression ratios across Go High Level funnels; monitored call center dispositions. Previous modeling was skewed by manual data capture; this gave the team a true daily view of ad spend, leading directly to reallocating budget away from underperforming channels.</li>
+          <li><strong>Executive BI:</strong> storytelling Power BI dashboards built from cleansed, standardized historical data, harmonizing EST/UTC streams into one source of truth. Built Power BI row-level security so frontline sales reps only ever saw their own data, with CRM-integrated clickable links for one-click drill-through to the underlying record. Replaced a sprawling spreadsheet executives used to read column by column with a one-glance daily snapshot of the month (see Projects: Leadership Dashboard).</li>
+          <li><strong>Secure AI:</strong> the company hadn't prioritized HIPAA compliance before — I helped strengthen that as we worked toward it, engineering AI workflows (Python, Claude, Gemini, Grok) that ensured no identifiable data ever reached reporting or anything visible externally, with KPI columns scoped precisely so AI analysis stayed accurate without overloading internal databases.</li>
           <li><strong>Governance:</strong> multi-join data flows that let internal and de-identified external reporting run off the same source without duplicating logic.</li>
         </ul>
       </div>
@@ -323,8 +323,8 @@ footer.gutter{padding-block:2rem;font-size:.8rem;color:var(--muted);font-family:
       </div>
       <div class="card">
         <span class="cat">AI Integration</span>
-        <h3>HIPAA-Compliant AI Reporting</h3>
-        <p>Infrastructure that strips identifiable data before anything touches an LLM, with KPI columns scoped precisely so AI analysis stays accurate without ever seeing PHI.</p>
+        <h3>AI Reporting Built for HIPAA Compliance</h3>
+        <p>The company hadn't prioritized HIPAA compliance before; I helped build that discipline into the AI layer — infrastructure that strips identifiable data before anything touches an LLM, so no PHI ever reached reporting or anything visible externally.</p>
         <div class="stack-row"><span class="chip">Python</span><span class="chip">Claude</span><span class="chip">Gemini</span></div>
       </div>
       <div class="card">
