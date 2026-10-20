@@ -183,6 +183,11 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .rls-table th{text-align:left;padding:.3rem .45rem;border-bottom:1px solid var(--border);color:var(--muted);font-weight:500;white-space:nowrap}
 .rls-table td{padding:.3rem .45rem;border-bottom:1px solid var(--border);white-space:nowrap}
 .rls-table .idlink{color:var(--accent);text-decoration:underline}
+.block-label{font-family:var(--font-mono);font-size:.68rem;text-transform:uppercase;color:var(--muted);letter-spacing:.04em;margin:0 0 .5rem}
+.trend-legend{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:.5rem;font-family:var(--font-mono);font-size:.68rem;color:var(--muted);align-items:center}
+.trend-legend .sw-line{display:inline-block;width:14px;height:2px;background:var(--accent);margin-right:.3rem;vertical-align:middle}
+.trend-legend .sw-band{display:inline-block;width:14px;height:8px;background:var(--accent);opacity:.3;margin-right:.3rem;vertical-align:middle}
+.trend-legend .sw-forecast{display:inline-block;width:14px;height:0;border-top:2px dashed var(--muted);margin-right:.3rem;vertical-align:middle}
 
 footer.gutter{padding-block:2rem;font-size:.8rem;color:var(--muted);font-family:var(--font-mono)}
 
@@ -636,8 +641,8 @@ function copyText(text, btn){
     {label:'Cancellation Rate', min:0, max:40, value:9, fmt:function(v){return v+'%';}, zones:[[0,.3,'good'],[.3,.6,'mid'],[.6,1,'bad']]},
     {label:'Cash on Hand', min:0, max:5000000, value:2100000, fmt:function(v){return '$'+(v/1000000).toFixed(1)+'M';}, zones:[[0,.3,'bad'],[.3,.6,'mid'],[.6,1,'good']]}
   ];
-  function renderGauges(){
-    var mount = document.getElementById('dash-gauges');
+  function renderGauges(mountId, GAUGES){
+    var mount = document.getElementById(mountId);
     if(!mount) return;
     var ns='http://www.w3.org/2000/svg';
     var cx=100, cy=100, r=78, sw=16;
@@ -684,6 +689,96 @@ function copyText(text, btn){
       mount.appendChild(tile);
     });
   }
-  renderGauges();
+  renderGauges('dash-gauges', GAUGES);
+
+  var BLOODWORK_GAUGES = [
+    {label:'Order Placed → Shipped', min:0, max:5, value:1, fmt:function(v){return v+'d';}, zones:[[0,.4,'good'],[.4,.7,'mid'],[.7,1,'bad']]},
+    {label:'Shipped → Delivered', min:0, max:7, value:3, fmt:function(v){return v+'d';}, zones:[[0,.4,'good'],[.4,.7,'mid'],[.7,1,'bad']]},
+    {label:'Delivered → Registered', min:0, max:10, value:4, fmt:function(v){return v+'d';}, zones:[[0,.4,'good'],[.4,.7,'mid'],[.7,1,'bad']]},
+    {label:'Registered → Ship to Lab', min:0, max:5, value:2, fmt:function(v){return v+'d';}, zones:[[0,.4,'good'],[.4,.7,'mid'],[.7,1,'bad']]},
+    {label:'Ship to Lab → Delivered', min:0, max:6, value:3, fmt:function(v){return v+'d';}, zones:[[0,.4,'good'],[.4,.7,'mid'],[.7,1,'bad']]},
+    {label:'Delivered → Processing', min:0, max:5, value:2, fmt:function(v){return v+'d';}, zones:[[0,.4,'good'],[.4,.7,'mid'],[.7,1,'bad']]},
+    {label:'Processing → Results', min:0, max:4, value:1, fmt:function(v){return v+'d';}, zones:[[0,.4,'good'],[.4,.7,'mid'],[.7,1,'bad']]}
+  ];
+  renderGauges('bw-gauges', BLOODWORK_GAUGES);
+
+  function renderDeviationChart(mountId, opts){
+    var mount = document.getElementById(mountId);
+    if(!mount) return;
+    var ns='http://www.w3.org/2000/svg';
+    var left=40, right=620, top=20, bottom=170, min=opts.min, max=opts.max;
+    var histMedian=opts.histMedian, histStd=opts.histStd, fMedian=opts.fMedian, fStd=opts.fStd;
+    var hN=histMedian.length, n=hN+fMedian.length;
+    function X(i){ return left+i*(right-left)/(n-1); }
+    function Y(v){ return bottom-(v-min)/(max-min)*(bottom-top); }
+    function med(i){ return i<hN?histMedian[i]:fMedian[i-hN]; }
+    function std(i){ return i<hN?histStd[i]:fStd[i-hN]; }
+    var svg=document.createElementNS(ns,'svg'); svg.setAttribute('viewBox','0 0 640 '+(bottom+40)); svg.setAttribute('class','diagram');
+    [0, max/2, max].forEach(function(gv){
+      var ly=Y(gv);
+      var gl=document.createElementNS(ns,'line');
+      gl.setAttribute('x1',left); gl.setAttribute('x2',right); gl.setAttribute('y1',ly); gl.setAttribute('y2',ly);
+      gl.setAttribute('stroke','var(--border)'); gl.setAttribute('stroke-width','1');
+      svg.appendChild(gl);
+      var gt=document.createElementNS(ns,'text');
+      gt.setAttribute('x',left-6); gt.setAttribute('y',ly+3); gt.setAttribute('text-anchor','end'); gt.setAttribute('font-size','8'); gt.setAttribute('fill','var(--muted)'); gt.setAttribute('font-family','var(--font-mono)');
+      gt.textContent=Math.round(gv);
+      svg.appendChild(gt);
+    });
+    var hiPts=[], loPts=[];
+    for(var i=0;i<hN;i++){ hiPts.push(X(i)+','+Y(med(i)+std(i))); }
+    for(var i=hN-1;i>=0;i--){ loPts.push(X(i)+','+Y(med(i)-std(i))); }
+    var bandPath=document.createElementNS(ns,'path');
+    bandPath.setAttribute('d','M '+hiPts.concat(loPts).join(' L ')+' Z');
+    bandPath.setAttribute('fill','var(--accent)'); bandPath.setAttribute('fill-opacity','0.16'); bandPath.setAttribute('stroke','none');
+    svg.appendChild(bandPath);
+    var fHi=[], fLo=[];
+    for(var i=hN-1;i<n;i++){ fHi.push(X(i)+','+Y(med(i)+std(i))); }
+    for(var i=n-1;i>=hN-1;i--){ fLo.push(X(i)+','+Y(med(i)-std(i))); }
+    var fBandPath=document.createElementNS(ns,'path');
+    fBandPath.setAttribute('d','M '+fHi.concat(fLo).join(' L ')+' Z');
+    fBandPath.setAttribute('fill','var(--muted)'); fBandPath.setAttribute('fill-opacity','0.22'); fBandPath.setAttribute('stroke','none');
+    svg.appendChild(fBandPath);
+    for(var i=0;i<hN;i++){
+      var wl=document.createElementNS(ns,'line');
+      wl.setAttribute('x1',X(i)); wl.setAttribute('x2',X(i));
+      wl.setAttribute('y1',Y(med(i)+std(i))); wl.setAttribute('y2',Y(med(i)-std(i)));
+      wl.setAttribute('stroke','var(--muted)'); wl.setAttribute('stroke-width','1');
+      svg.appendChild(wl);
+    }
+    var histLinePts=[]; for(var i=0;i<hN;i++){ histLinePts.push(X(i)+','+Y(med(i))); }
+    var histLine=document.createElementNS(ns,'polyline');
+    histLine.setAttribute('points',histLinePts.join(' '));
+    histLine.setAttribute('fill','none'); histLine.setAttribute('stroke','var(--accent)'); histLine.setAttribute('stroke-width','2');
+    svg.appendChild(histLine);
+    for(var i=0;i<hN;i++){
+      var c=document.createElementNS(ns,'circle');
+      c.setAttribute('cx',X(i)); c.setAttribute('cy',Y(med(i))); c.setAttribute('r','3');
+      c.setAttribute('fill','var(--accent)');
+      svg.appendChild(c);
+    }
+    var fLinePts=[]; for(var i=hN-1;i<n;i++){ fLinePts.push(X(i)+','+Y(med(i))); }
+    var fLine=document.createElementNS(ns,'polyline');
+    fLine.setAttribute('points',fLinePts.join(' '));
+    fLine.setAttribute('fill','none'); fLine.setAttribute('stroke','var(--muted)'); fLine.setAttribute('stroke-width','2'); fLine.setAttribute('stroke-dasharray','4 3');
+    svg.appendChild(fLine);
+    var labels=opts.labels;
+    for(var i=0;i<n;i++){
+      if(!labels[i]) continue;
+      var lt=document.createElementNS(ns,'text');
+      lt.setAttribute('x',X(i)); lt.setAttribute('y',bottom+16); lt.setAttribute('text-anchor','middle'); lt.setAttribute('font-size','8'); lt.setAttribute('fill','var(--muted)'); lt.setAttribute('font-family','var(--font-mono)');
+      lt.textContent=labels[i];
+      svg.appendChild(lt);
+    }
+    mount.appendChild(svg);
+  }
+  renderDeviationChart('bw-trend', {
+    min:0, max:32,
+    histMedian:[15,13,14,12,19,24,21,16,13,12],
+    histStd:[3,2,4,3,5,6,4,3,2,2],
+    fMedian:[12,13,12],
+    fStd:[3,5,7],
+    labels:{0:'Jan 2026',3:'Apr 2026',6:'Jul 2026',9:'Oct 2026',12:'Jan 2027'}
+  });
 })();
 </script>
