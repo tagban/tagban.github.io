@@ -337,7 +337,7 @@ footer.gutter{padding-block:2rem;font-size:.8rem;color:var(--muted);font-family:
       </summary>
       <div class="role-body">
         <ul>
-          <li>Owned end-to-end ingestion automation (Azure Data Factory, Microsoft Fabric), converting files to EDI format.</li>
+          <li>Owned end-to-end ingestion automation (Azure Data Factory, Microsoft Fabric) — every health plan sent claims files in its own format, so I built the normalization logic that adapted each plan's quirks to our standard EDI format before anything hit the pipeline.</li>
           <li>Built Power BI reporting and ran research queries across PostgreSQL, T-SQL, and BigQuery.</li>
           <li>Wrote data quality checks for health-plan data using R, SQL views, and stored procedures.</li>
           <li>Hands-on across Ontrak's shift from CRM to EHR — form design and data capture, reporting rebuild, and storage architecture, including processing FHIR files into MongoDB for improved accessibility and Fabric integration.</li>
@@ -426,7 +426,7 @@ footer.gutter{padding-block:2rem;font-size:.8rem;color:var(--muted);font-family:
       <div class="card">
         <span class="cat">Pipelines &amp; Architecture</span>
         <h3>EDI Ingestion Automation</h3>
-        <p>End-to-end file ingestion at Ontrak, converting raw health-plan exports to EDI format and processing FHIR records into MongoDB for downstream Fabric use.</p>
+        <p>Every health plan sent claims files in its own format — different field orders, naming conventions, delimiters. I built the normalization layer that mapped each plan's quirks onto a single standardized EDI format, plus FHIR record processing into MongoDB for downstream Fabric use.</p>
         <div class="stack-row"><span class="chip">Azure Data Factory</span><span class="chip">Microsoft Fabric</span><span class="chip">MongoDB</span></div>
       </div>
       <div class="card" style="grid-column:1/-1" id="leadership-dashboard">
