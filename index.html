@@ -13,6 +13,8 @@
   --muted:#73695a;
   --accent:#9c4f1e;
   --accent2:#4a5530;
+  --gauge-bad:#b1432f;
+  --gauge-mid:#c99a2e;
   --border:rgba(28,24,19,0.14);
   --font-display:'IBM Plex Mono', ui-monospace, Menlo, monospace;
   --font-body:'IBM Plex Sans', system-ui, sans-serif;
@@ -27,6 +29,8 @@
     --muted:#968c7b;
     --accent:#d98a3d;
     --accent2:#7c8f54;
+    --gauge-bad:#e2714f;
+    --gauge-mid:#e8b84b;
     --border:rgba(236,230,218,0.14);
     color-scheme:dark;
   }
@@ -39,6 +43,8 @@
   --muted:#968c7b;
   --accent:#d98a3d;
   --accent2:#7c8f54;
+  --gauge-bad:#e2714f;
+  --gauge-mid:#e8b84b;
   --border:rgba(236,230,218,0.14);
   color-scheme:dark;
 }
@@ -147,6 +153,22 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .contact-item .value{font-size:.92rem;word-break:break-word}
 .copy-btn{margin-left:auto;font-family:var(--font-mono);font-size:.7rem;background:none;border:1px solid var(--border);color:var(--fg);border-radius:0;padding:.3rem .55rem;cursor:pointer;flex:none}
 .copy-btn:hover{border-color:var(--accent)}
+
+/* leadership dashboard mock */
+.dash-mock{border:1px solid var(--border);margin-top:1rem;overflow:hidden}
+.dash-header{background:var(--fg);color:var(--bg);padding:.9rem 1.2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.dash-header .brand-mark{background:var(--accent)}
+.dash-title{font-family:var(--font-display);font-weight:700;font-size:1rem}
+.dash-badge{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;border:1px solid currentColor;padding:.2rem .55rem;opacity:.85}
+.dash-body{padding:1.2rem;background:var(--surface-alt)}
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.9rem}
+.gauge-tile{background:var(--surface);border:1px solid var(--border);padding:.75rem;text-align:center;min-width:0}
+.gauge-label{font-family:var(--font-mono);font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.1rem}
+.gauge-svg{width:100%;height:auto;display:block}
+.team-tile{background:var(--surface);border:1px solid var(--border);padding:.9rem;display:flex;gap:1.5rem;margin-top:.9rem}
+.team-stat{text-align:center}
+.team-stat .num{font-family:var(--font-display);font-size:1.4rem;font-weight:700}
+.team-stat .lbl{font-family:var(--font-mono);font-size:.68rem;color:var(--muted);text-transform:uppercase}
 
 footer.gutter{padding-block:2rem;font-size:.8rem;color:var(--muted);font-family:var(--font-mono)}
 
@@ -345,6 +367,27 @@ footer.gutter{padding-block:2rem;font-size:.8rem;color:var(--muted);font-family:
         <p>End-to-end file ingestion at Ontrak, converting raw health-plan exports to EDI format and processing FHIR records into MongoDB for downstream Fabric use.</p>
         <div class="stack-row"><span class="chip">Azure Data Factory</span><span class="chip">Microsoft Fabric</span><span class="chip">MongoDB</span></div>
       </div>
+      <div class="card" style="grid-column:1/-1" id="leadership-dashboard">
+        <span class="cat">Executive BI · Mockup</span>
+        <h3>Leadership Dashboard</h3>
+        <p>A sanitized recreation of a Power BI leadership dashboard I built — replaced a sprawling spreadsheet executives used to read column by column with a daily, one-glance snapshot. All values below are randomized placeholders; this is not the original dataset, layout, or branding.</p>
+        <div class="dash-mock">
+          <div class="dash-header">
+            <div style="display:flex;align-items:center;gap:.6rem">
+              <span class="brand-mark">JL</span>
+              <span class="dash-title">Leadership Dashboard</span>
+            </div>
+            <span class="dash-badge">Illustrative data</span>
+          </div>
+          <div class="dash-body">
+            <div class="dash-grid" id="dash-gauges"></div>
+            <div class="team-tile">
+              <div class="team-stat"><div class="num tabular">24</div><div class="lbl">Headcount</div></div>
+              <div class="team-stat"><div class="num tabular">3</div><div class="lbl">Open Roles</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -453,4 +496,64 @@ function copyText(text, btn){
     navigator.clipboard.writeText(text).then(function(){done(true)}).catch(function(){done(false)});
   }catch(e){ done(false); }
 }
+
+(function(){
+  var GAUGES = [
+    {label:'Monthly Revenue', min:0, max:1500000, value:640000, fmt:function(v){return '$'+Math.round(v/1000)+'K';}, zones:[[0,.45,'bad'],[.45,.7,'mid'],[.7,1,'good']]},
+    {label:'Units Sold', min:0, max:2000, value:860, fmt:function(v){return v.toLocaleString();}, zones:[[0,.3,'bad'],[.3,.6,'mid'],[.6,1,'good']]},
+    {label:'Close Rate', min:0, max:100, value:34, fmt:function(v){return v+'%';}, zones:[[0,.25,'bad'],[.25,.5,'mid'],[.5,1,'good']]},
+    {label:'Show Rate', min:0, max:100, value:72, fmt:function(v){return v+'%';}, zones:[[0,.5,'bad'],[.5,.75,'mid'],[.75,1,'good']]},
+    {label:'Cancellation Rate', min:0, max:40, value:9, fmt:function(v){return v+'%';}, zones:[[0,.3,'good'],[.3,.6,'mid'],[.6,1,'bad']]},
+    {label:'Cash on Hand', min:0, max:5000000, value:2100000, fmt:function(v){return '$'+(v/1000000).toFixed(1)+'M';}, zones:[[0,.3,'bad'],[.3,.6,'mid'],[.6,1,'good']]}
+  ];
+  function renderGauges(){
+    var mount = document.getElementById('dash-gauges');
+    if(!mount) return;
+    var ns='http://www.w3.org/2000/svg';
+    var cx=100, cy=100, r=78, sw=16;
+    var colors={bad:'var(--gauge-bad)', mid:'var(--gauge-mid)', good:'var(--accent)'};
+    function pt(f){ var th=(f-0.5)*Math.PI; return {x:cx+r*Math.sin(th), y:cy-r*Math.cos(th)}; }
+    GAUGES.forEach(function(g){
+      var tile=document.createElement('div'); tile.className='gauge-tile';
+      var title=document.createElement('div'); title.className='gauge-label'; title.textContent=g.label;
+      var svg=document.createElementNS(ns,'svg'); svg.setAttribute('viewBox','0 0 200 130'); svg.setAttribute('class','gauge-svg');
+      g.zones.forEach(function(z){
+        var p1=pt(z[0]), p2=pt(z[1]);
+        var path=document.createElementNS(ns,'path');
+        path.setAttribute('d','M '+p1.x+' '+p1.y+' A '+r+' '+r+' 0 0 1 '+p2.x+' '+p2.y);
+        path.setAttribute('stroke', colors[z[2]]);
+        path.setAttribute('stroke-width', sw);
+        path.setAttribute('fill','none');
+        svg.appendChild(path);
+      });
+      var frac=Math.max(0,Math.min(1,(g.value-g.min)/(g.max-g.min)));
+      var deg=(frac-0.5)*180;
+      var needle=document.createElementNS(ns,'line');
+      needle.setAttribute('x1',cx); needle.setAttribute('y1',cy);
+      needle.setAttribute('x2',cx); needle.setAttribute('y2',cy-r+22);
+      needle.setAttribute('stroke','var(--fg)'); needle.setAttribute('stroke-width','3'); needle.setAttribute('stroke-linecap','round');
+      needle.setAttribute('transform','rotate('+deg+' '+cx+' '+cy+')');
+      svg.appendChild(needle);
+      var pivot=document.createElementNS(ns,'circle');
+      pivot.setAttribute('cx',cx); pivot.setAttribute('cy',cy); pivot.setAttribute('r',7);
+      pivot.setAttribute('fill','var(--surface)'); pivot.setAttribute('stroke','var(--fg)'); pivot.setAttribute('stroke-width','2');
+      svg.appendChild(pivot);
+      var minLabel=document.createElementNS(ns,'text');
+      minLabel.setAttribute('x',cx-r); minLabel.setAttribute('y',cy+20); minLabel.setAttribute('font-size','9'); minLabel.setAttribute('fill','var(--muted)'); minLabel.setAttribute('font-family','var(--font-mono)'); minLabel.setAttribute('text-anchor','start');
+      minLabel.textContent=g.fmt(g.min);
+      svg.appendChild(minLabel);
+      var maxLabel=document.createElementNS(ns,'text');
+      maxLabel.setAttribute('x',cx+r); maxLabel.setAttribute('y',cy+20); maxLabel.setAttribute('font-size','9'); maxLabel.setAttribute('fill','var(--muted)'); maxLabel.setAttribute('font-family','var(--font-mono)'); maxLabel.setAttribute('text-anchor','end');
+      maxLabel.textContent=g.fmt(g.max);
+      svg.appendChild(maxLabel);
+      var valText=document.createElementNS(ns,'text');
+      valText.setAttribute('x',cx); valText.setAttribute('y',cy-8); valText.setAttribute('font-size','20'); valText.setAttribute('fill','var(--fg)'); valText.setAttribute('font-family','var(--font-display)'); valText.setAttribute('font-weight','700'); valText.setAttribute('text-anchor','middle');
+      valText.textContent=g.fmt(g.value);
+      svg.appendChild(valText);
+      tile.appendChild(title); tile.appendChild(svg);
+      mount.appendChild(tile);
+    });
+  }
+  renderGauges();
+})();
 </script>
